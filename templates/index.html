@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0">
+
     <title>Password Generator</title>
 
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+          href="{{ url_for('static',
+          filename='style.css') }}">
+
 </head>
 
 <body>
@@ -23,11 +31,59 @@
             placeholder="Enter Password Length"
             required>
 
+        <div class="options">
+
+            <label>
+                <input type="checkbox"
+                       name="lowercase"
+                       checked>
+
+                Lowercase
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       name="uppercase"
+                       checked>
+
+                Uppercase
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       name="numbers"
+                       checked>
+
+                Numbers
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       name="symbols"
+                       checked>
+
+                Symbols
+            </label>
+
+        </div>
+
         <button type="submit">
+
             Generate Password
+
         </button>
 
     </form>
+
+    {% if error %}
+
+    <p class="error-message">
+
+        {{ error }}
+
+    </p>
+
+    {% endif %}
 
     {% if password %}
 
@@ -39,11 +95,18 @@
             id="password"
             readonly>
 
-        <button class="copy-btn" onclick="copyPassword()">
+        <button class="copy-btn"
+                onclick="copyPassword()">
+
             Copy
+
         </button>
 
     </div>
+
+    <p id="copy-message"></p>
+
+    <p id="strength-text"></p>
 
     {% endif %}
 
@@ -54,16 +117,65 @@
 function copyPassword() {
 
     let password =
-        document.getElementById("password");
+        document.getElementById(
+            "password"
+        );
 
-    password.select();
-    password.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(
+        password.value
+    );
 
-    navigator.clipboard.writeText(password.value);
+    let message =
+        document.getElementById(
+            "copy-message"
+        );
 
-    alert("Password Copied Successfully!");
+    message.innerHTML =
+        "Copied Successfully ✅";
 
+    setTimeout(() => {
+
+        message.innerHTML = "";
+
+    }, 2000);
 }
+
+function checkStrength(password){
+
+    let strengthText =
+        document.getElementById(
+            "strength-text"
+        );
+
+    if(password.length < 6){
+
+        strengthText.innerHTML =
+            "Weak Password 🔴";
+
+        strengthText.style.color =
+            "red";
+    }
+
+    else if(password.length < 10){
+
+        strengthText.innerHTML =
+            "Medium Password 🟠";
+
+        strengthText.style.color =
+            "orange";
+    }
+
+    else{
+
+        strengthText.innerHTML =
+            "Strong Password 🟢";
+
+        strengthText.style.color =
+            "green";
+    }
+}
+
+checkStrength("{{ password }}");
 
 </script>
 
